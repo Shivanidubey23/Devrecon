@@ -51,16 +51,23 @@ export const userAPI = {
   searchUsers: (query) => api.get(`/users/search?q=${query}`)
 };
 
-// Project endpoints (for future use)
+// Project endpoints
 export const projectAPI = {
-  getAllProjects: () => api.get('/projects'),
+  getAllProjects: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return api.get(`/projects${queryString ? `?${queryString}` : ''}`);
+  },
   getProjectById: (id) => api.get(`/projects/${id}`),
   createProject: (projectData) => api.post('/projects', projectData),
   updateProject: (id, projectData) => api.put(`/projects/${id}`, projectData),
   deleteProject: (id) => api.delete(`/projects/${id}`),
-  searchProjects: (query) => api.get(`/projects/search?q=${query}`),
-  addComment: (projectId, comment) => api.post(`/projects/${projectId}/comments`, { content: comment }),
-  deleteComment: (projectId, commentId) => api.delete(`/projects/${projectId}/comments/${commentId}`)
+  getUserProjects: (userId, params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return api.get(`/projects/user/${userId}${queryString ? `?${queryString}` : ''}`);
+  },
+  addComment: (projectId, content) => api.post(`/projects/${projectId}/comments`, { content }),
+  deleteComment: (projectId, commentId) => api.delete(`/projects/${projectId}/comments/${commentId}`),
+  toggleLike: (projectId) => api.post(`/projects/${projectId}/like`)
 };
 
 export default api;
