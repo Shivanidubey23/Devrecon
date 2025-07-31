@@ -148,10 +148,108 @@ const validateProfileUpdate = (req, res, next) => {
   next();
 };
 
+// Validate project creation/update
+const validateProject = (req, res, next) => {
+  const { title, description, technologies } = req.body;
+  const errors = [];
+  
+  // Check required fields
+  if (!title || title.trim().length === 0) {
+    errors.push('Project title is required');
+  } else if (title.trim().length > 100) {
+    errors.push('Title cannot exceed 100 characters');
+  }
+  
+  if (!description || description.trim().length === 0) {
+    errors.push('Project description is required');
+  } else if (description.trim().length > 2000) {
+    errors.push('Description cannot exceed 2000 characters');
+  }
+  
+  if (!technologies || !Array.isArray(technologies) || technologies.length === 0) {
+    errors.push('At least one technology is required');
+  } else if (technologies.length > 20) {
+    errors.push('Cannot have more than 20 technologies');
+  }
+  
+  // Validate optional fields
+  if (req.body.shortDescription && req.body.shortDescription.length > 200) {
+    errors.push('Short description cannot exceed 200 characters');
+  }
+  
+  // Validate URLs
+  const urlRegex = /^https?:\/\/.+$/;
+  const githubRegex = /^https?:\/\/(www\.)?github\.com\/.+/;
+  
+  if (req.body.githubUrl && !githubRegex.test(req.body.githubUrl)) {
+    errors.push('Please provide a valid GitHub repository URL');
+  }
+  
+  if (req.body.liveUrl && !urlRegex.test(req.body.liveUrl)) {
+    errors.push('Please provide a valid live demo URL');
+  }
+  
+  if (req.body.imageUrl && !urlRegex.test(req.body.imageUrl)) {
+    errors.push('Please provide a valid image URL');
+  }
+  
+  // Validate enums
+  const validStatuses = ['planning', 'in-progress', 'completed', 'on-hold'];
+  if (req.body.status && !validStatuses.includes(req.body.status)) {
+    errors.push('Invalid project status');
+  }
+  
+  const validDifficulties = ['beginner', 'intermediate', 'advanced'];
+  if (req.body.difficulty && !validDifficulties.includes(req.body.difficulty)) {
+    errors.push('Invalid difficulty level');
+  }
+  
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation failed',
+      errors
+    });
+  }
+  
+  // Sanitize input
+  req.body.title = title.trim();
+  req.body.description = description.trim();
+  if (req.body.shortDescription) {
+    req.body.shortDescription = req.body.shortDescription.trim();
+  }
+  
+  next();
+};
+
+// Validate comment content
+const validateComment = (req, res, next) => {
+  const { content } = req.body;
+  const errors = [];
+  
+  if (!content || content.trim().length === 0) {
+    errors.push('Comment content is required');
+  } else if (content.trim().length > 1000) {
+    errors.push('Comment cannot exceed 1000 characters');
+  }
+  
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation failed',
+      errors
+    });
+  }
+  
+  next();
+};
+
 module.exports = {
   validateRegister,
   validateLogin,
   validateProfileUpdate,
+  validateProject,
+  validateComment,
   isValidEmail,
   isValidPassword
 };

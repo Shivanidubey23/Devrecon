@@ -44,6 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const projectRoutes = require('./routes/projects');
 
 // API routes
 app.get('/api/health', (req, res) => {
@@ -56,6 +57,7 @@ app.get('/api/health', (req, res) => {
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
