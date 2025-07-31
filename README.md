@@ -1,4 +1,4 @@
-# DevConnect
+# DevReCon
 
 A full-stack web application that allows developers to create profiles, showcase projects, and receive feedback from the community.
 
@@ -29,7 +29,7 @@ Before running this application, make sure you have the following installed:
 ### 1. Clone the repository
 ```bash
 git clone <your-repo-url>
-cd devconnect
+cd devrecon
 ```
 
 ### 2. Backend Setup
@@ -77,7 +77,7 @@ The frontend application will start on `http://localhost:3000`
 ## 📁 Project Structure
 
 ```
-devconnect/
+devrecon/
 ├── backend/
 │   ├── config/          # Database and JWT configuration
 │   ├── controllers/     # Route controllers
